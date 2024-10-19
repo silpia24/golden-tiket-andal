@@ -28,15 +28,17 @@ int main()
     // ipi = diskon
     // ur = uang
     // ipiw = kembalian
+    // ilpi = seat taken
+    // nis = nim
 
-    string silpia, n, np, nur, nrl, nurul, pia;
+    string silpia, n, np, nur, nrl, nurul, pia, nuruls;
     int nis, u, nr, nu, nl[24], ns, ul, rul, si, slp, ipi, sil, silpi, ur, ipiw;
 
     time_t timestamp = time(NULL);
     struct tm datetime = *localtime(&timestamp);
 
 START:
-    cout << "DAFTAR PEMESANAN TIKET 12 \n ======================= \n";
+    cout << "\n\nDAFTAR PEMESANAN TIKET 12 \n ============================== \n";
 
     cout << "Nama Pemesan: ";
     getline(cin >> ws, n);
@@ -57,22 +59,48 @@ START:
     cout << "\n 1. VIP \n 2. Bisnis \n 3. Regular \nPilih jenis bangku: (masukan angka) ";
     cin >> nur;
 
+    // Validasi apakah jenis bangku dipilih
+    if (nur == "") {
+        cout << "Jenis bangku harus dipilih!\n";
+        return 0; // Mengakhiri program jika jenis bangku tidak dipilih
+    }
+
     cout << "Jumlah tiket yang ingin dibeli: ";
     cin >> si;
 
-    cout << "Masukan jumlah uang: Rp ";
-    cin >> ur;
+    if (si >= 3) {
+        ipi = 5000;
+    } else {
+        ipi = 0;
+    }
 
     for (int i = 0; i < si; i++)
     {
-        cout << "Silahkan pilih nomor bangku ke-" << i + 1 << " (1-24): ";
-        cin >> nl[i];
+        bool ilpi;
+        do {
+            ilpi = false;
+            cout << "Silahkan pilih nomor bangku ke-" << i + 1 << " (1-24): ";
+            cin >> nl[i];
 
-        if (nl[i] < 1 || nl[i] > 24)
-        {
-            cout << "--Nomor bangku tidak sesuai-- \n";
-            i--;
-        }
+            // Validasi nomor bangku dalam rentang yang sesuai
+            if (nl[i] < 1 || nl[i] > 24)
+            {
+                cout << "--Nomor bangku tidak sesuai-- \n";
+                ilpi = true;
+                continue;
+            }
+
+            // Validasi apakah kursi sudah dipilih sebelumnya
+            for (int j = 0; j < i; j++)
+            {
+                if (nl[i] == nl[j])
+                {
+                    cout << "--Nomor bangku sudah dipilih, silakan pilih nomor bangku yang lain-- \n";
+                    ilpi = true;
+                    break;
+                }
+            }
+        } while (ilpi);
     }
 
     // kondisi bangku
@@ -199,23 +227,19 @@ START:
         }
     }
 
-    if (si >=3)
-    {
-        ipi = 5000;
-    }
-
-    // cout << "DISKONNNN = " << ipi << "\n";
+    cout << "Masukan jumlah uang: Rp ";
+    cin >> ur;
 
     sil = (slp + ul) * si - ipi;
 
-    if (ur > sil)
-    {
-        ipiw = ur - sil;
-    }else
-    {
-        ipiw = 0;
+    // Cek apakah uang cukup untuk pembayaran
+    if (ur < sil) {
+        cout << "Uang tidak cukup, total pembayaran adalah: " << sil << "\n";
+        cout << "Silakan masukkan jumlah uang yang sesuai.\n";
+        return 0; // Mengakhiri program jika uang kurang
     }
-    
+
+    ipiw = ur - sil;
 
     cout << "\n============================== \n";
     cout << "Nama Pemesan   : " << n << "\n";
@@ -233,24 +257,31 @@ START:
         cout << nl[i] << (i < si - 1 ? ", " : "");
     }
     cout << "\nTotal bayar    : " << sil << "\n";
-    cout << "Uang masuk     : " << ul << "\n";
+    cout << "Uang masuk     : " << ur << "\n";
     cout << "Uang kembalian : " << ipiw << "\n";
-    cout << "\n============================== \n";
+    cout << "\n ============================== \n";
+    
+    cout << "Programmer: ";
+    cout << "\nNIM: ";
+    cin >> nuruls;
+    if (nuruls == "2412510030") {
+      cout << "NAMA: NURUL SILPIA";
+    } else {
+      cout << "BUKAN NIM NURUL SILPIA";
+    }
+    
+    cout << "\n ============================== \n";
+    cout << "\nKembali ke program awal? (y/n) ";
+    cin >> silpia;
 
-    // cout << "Pilih jenis bangku: (masukan angka)";
-    // cin >> nur;
-
-    // cout << "\nKembali ke program awal? (y/n) ";
-    // cin >> silpia;
-
-    // if (silpia == "y")
-    // {
-    //     goto START;
-    // }
-    // else if (silpia == "n")
-    // {
-    //     cout << "terimakasih ";
-    // }
+    if (silpia == "y")
+    {
+        goto START;
+    }
+    else if (silpia == "n")
+    {
+        cout << "terimakasih ";
+    }
 
     return 0;
 }
